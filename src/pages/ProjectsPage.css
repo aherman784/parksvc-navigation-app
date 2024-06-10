@@ -1,0 +1,43 @@
+.projects-container {
+  font-family: 'Montserrat', sans-serif;
+  position: relative;
+  padding: 10px;
+}
+
+.upload-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 150px;
+  height: 40px;
+  background-color: green;
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+}
+
+.upload-button:hover {
+  background-color: darkgreen;
+}
+
+.custom-file-upload {
+  display: inline-block;
+  width: 150px;
+  height: 40px;
+  text-align: center;
+  margin-top: 10px;
+  background-color: green;
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+}
+
+.custom-file-upload input[type="file"] {
+  display: none;
+}

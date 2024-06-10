@@ -1,12 +1,13 @@
 import React from 'react';
+import './NavigationPage.css';
 
-const Navigation = () => {
+const NavigationPage = () => {
   return (
-    <div>
+    <div className='navigation-container'>
       <h1>Navigation Page</h1>
       <p>This is a placeholder for the Navigation page.</p>
     </div>
   );
 };
 
-export default Navigation;
+export default NavigationPage;
