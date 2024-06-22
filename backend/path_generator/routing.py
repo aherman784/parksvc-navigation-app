@@ -11,30 +11,26 @@ from path_generator import generate_path
 def routing_engine(filename: str):
     kml_results = Kml(f"../to_be_parsed/{filename}")
     points_list = kml_results.get_points_list()
-    park_route, within_park_routes = generate_path(points_list)
-    save_results(filename[:-4], park_route, within_park_routes)
+    final_route, within_park_routes = generate_path(points_list)
+    save_results(filename[:-4], final_route, within_park_routes)
 
-    # print_routes(park_route, within_park_routes)
+    # print_routes(final_route, within_park_routes)
 
-
-def save_results(filename: str, park_route, within_park_routes):
+def save_results(filename: str, final_route, within_park_routes):
     USCTZ = pytz.timezone('US/Central')
     now = datetime.now(USCTZ).strftime('%Y-%m-%d_%H-%M-%S')
 
     # Convert numpy types to usable JSON types
-    park_route = [int(p) if isinstance(p, np.integer)
-                  else p for p in park_route]
-
+    final_route = [(float(lat), float(lon)) if isinstance(lat, np.floating) else (lat, lon) for lat, lon in final_route]
     within_park_routes = {
         int(k) if isinstance(k, np.integer) else k: [
-            (float(lat), float(lon)) if isinstance(
-                lat, np.floating) else (lat, lon)
+            (float(lat), float(lon)) if isinstance(lat, np.floating) else (lat, lon)
             for lat, lon in v
         ] for k, v in within_park_routes.items()
     }
 
     results = {
-        "park_route": park_route,
+        "final_route": final_route,
         "within_park_routes": within_park_routes
     }
 
