@@ -8,7 +8,7 @@ DUMP_COORDS = (41.381526, -96.253521)
 SHOP_COORDS = (41.225876, -96.143424)
 
 # Constant for what is possible to visit while walking
-WALKING_DISTANCE_THRESHOLD_KM = 0.804672
+WALKING_DISTANCE_THRESHOLD_KM = 0.5
 
 def generate_path(points_list):
     parks = cluster_points_into_parks(points_list)
@@ -16,7 +16,7 @@ def generate_path(points_list):
     park_coords = [np.mean(parks[park_id], axis=0) for park_id in park_ids]
 
     # Compute the distance from SHOP_COORDS to each park
-    shop_to_park_distances = [haversine(SHOP_COORDS, park_coords[i], unit=Unit.KILOMETERS) for i in range(len(park_coords))]
+    # shop_to_park_distances = [haversine(SHOP_COORDS, park_coords[i], unit=Unit.KILOMETERS) for i in range(len(park_coords))]
 
     # Add DUMP_COORDS to the end of park_coords
     park_coords.append(DUMP_COORDS)

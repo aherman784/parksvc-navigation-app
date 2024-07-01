@@ -46,12 +46,15 @@ def save_results(filename: str, final_route, within_park_routes):
 
 
 def print_routes(park_route, within_park_routes):
-    print("Optimal park-to-park route:")
+    # print("Optimal park-to-park route:")
     print(park_route)
+    
+    for point in park_route:
+        print(f"{point[0]},{point[1]},")
 
-    print("\nOptimal routes within each park:")
-    for park_id, route in within_park_routes.items():
-        print(f"Park {park_id}: {route}")
+    # print("\nOptimal routes within each park:")
+    # for park_id, route in within_park_routes.items():
+    #     print(f"Park {park_id}: {route}")
 
 
 if __name__ == "__main__":

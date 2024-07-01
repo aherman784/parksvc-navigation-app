@@ -1,5 +1,4 @@
 /path_generator/cache
-/path_data/*
 /path_generator/__pycache__
 /path_generator/cache
 /results/*
