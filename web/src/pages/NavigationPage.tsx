@@ -1,4 +1,3 @@
-import React from 'react';
 import './NavigationPage.css';
 
 const NavigationPage = () => {

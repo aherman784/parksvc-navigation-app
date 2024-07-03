@@ -1,11 +1,11 @@
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import './ProjectsPage.css';
 
 const ProjectsPage = () => {
-  const fileInputRef = useRef(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleUploadClick = () => {
-    fileInputRef.current.click();
+    fileInputRef.current!.click();
   };
 
   return (
@@ -20,7 +20,7 @@ const ProjectsPage = () => {
         style={{ display: 'none' }}
         accept='.kml,.kmz'
       />
-      <p>This is a placeholder for the Projects page.</p>
+      <p>Projects page placeholder (may be removed)</p>
     </div>
   );
 };

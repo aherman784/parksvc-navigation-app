@@ -14,17 +14,21 @@ def routing_engine(filename: str):
     final_route, within_park_routes = generate_path(points_list)
     save_results(filename[:-4], final_route, within_park_routes)
 
+    # TODO: remove when finished with debugging
     # print_routes(final_route, within_park_routes)
+
 
 def save_results(filename: str, final_route, within_park_routes):
     USCTZ = pytz.timezone('US/Central')
     now = datetime.now(USCTZ).strftime('%Y-%m-%d_%H-%M-%S')
 
     # Convert numpy types to usable JSON types
-    final_route = [(float(lat), float(lon)) if isinstance(lat, np.floating) else (lat, lon) for lat, lon in final_route]
+    final_route = [(float(lat), float(lon)) if isinstance(
+        lat, np.floating) else (lat, lon) for lat, lon in final_route]
     within_park_routes = {
         int(k) if isinstance(k, np.integer) else k: [
-            (float(lat), float(lon)) if isinstance(lat, np.floating) else (lat, lon)
+            (float(lat), float(lon)) if isinstance(
+                lat, np.floating) else (lat, lon)
             for lat, lon in v
         ] for k, v in within_park_routes.items()
     }
@@ -45,10 +49,11 @@ def save_results(filename: str, final_route, within_park_routes):
     print(f"Results saved to {result_filename}")
 
 
+# Used for debugging
 def print_routes(park_route, within_park_routes):
     # print("Optimal park-to-park route:")
     print(park_route)
-    
+
     for point in park_route:
         print(f"{point[0]},{point[1]},")
 

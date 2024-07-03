@@ -1,5 +1,78 @@
 .routes-container {
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   position: relative;
   padding: 10px;
+}
+
+.header-controls {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.upload-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 150px;
+  height: 40px;
+  background-color: green;
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.upload-button:hover {
+  background-color: darkgreen;
+}
+
+.sort-dropdown {
+  display: flex;
+  align-items: center;
+}
+
+.sort-dropdown label {
+  margin-right: 10px;
+}
+
+.route-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(333px, 1fr));
+  gap: 20px;
+}
+
+.route-item {
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+
+.route-details {
+  margin-bottom: 10px;
+}
+
+.route-name {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.view-route-button {
+  font-family: "Montserrat";
+  background-color: green;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: 25px;
+  transition: background-color 0.3s;
+}
+
+.view-route-button:hover {
+  background-color: darkgreen;
 }
