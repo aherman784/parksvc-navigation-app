@@ -1,11 +1,12 @@
-import { useEffect, useState, useRef } from "react";
 import "./RoutesPage.css";
+import { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 
 interface RouteFile {
   fileName: string;
+  shortFileName: string;
   uploadDate: string;
-  fileSize: string;
+  numPoints: number;
 }
 
 const RoutesPage = () => {
@@ -18,28 +19,35 @@ const RoutesPage = () => {
     fileInputRef.current!.click();
   };
 
-  // TODO: Implement file upload from AWS S3
-  // Get route from placeholder for testing
+  // Get JSON files from routes_placeholders
+  // TODO: Replace with S3 fetch
+  const loadRouteFiles = () => {
+    const context = (require as any).context("../routes_placeholders", false, /\.json$/);
+    const files = context.keys().map((key: string) => {
+      const fileName = key.replace("./", "");
+
+      const uploadDateMatch = fileName.match(/results_(\d{4}-\d{2}-\d{2})/);
+      const uploadDate = uploadDateMatch?.[1] || "Unknown";
+
+      const shortFileNameMatch = fileName.match(/^(.*)_results_/);
+      const shortFileName = shortFileNameMatch?.[1].replaceAll("_", " ") || "Unknown";
+
+      const fileContent = context(key);
+      const numPoints = getPathNodes(fileContent);
+
+      return {
+        fileName,
+        shortFileName,
+        uploadDate,
+        numPoints,
+      };
+    });
+    return files;
+  };
+
   const fetchRouteData = async () => {
     try {
-      const content: RouteFile[] = [
-        {
-          fileName: "Many_Park_Path_results_2024-07-01_14-33-19.json",
-          uploadDate: "2.5 MB",
-          fileSize: "2024-07-01",
-        },
-        {
-          fileName: "Short Trash Path",
-          uploadDate: "2024-07-04",
-          fileSize: "1.2 MB",
-        },
-        {
-          fileName: "Whole Route Path",
-          uploadDate: "2024-08-22",
-          fileSize: "5.0 MB",
-        },
-      ];
-
+      const content: RouteFile[] = loadRouteFiles();
       setRouteFiles(content);
     } catch (error) {
       console.error("Error fetching route data:", error);
@@ -50,17 +58,33 @@ const RoutesPage = () => {
     fetchRouteData();
   }, []);
 
+  const getPathNodes = (json: any): number[][] => {
+    if (json && json.final_route && Array.isArray(json.final_route)) {
+      return json.final_route.map((point: number[]) => [point[0], point[1]]).length;
+    } else {
+      return [];
+    }
+  };
+
   const sortRouteFiles = (files: RouteFile[], method: string) => {
     return files.sort((a, b) => {
       const dateA = new Date(a.uploadDate);
       const dateB = new Date(b.uploadDate);
-      if (method === "asc") {
+      
+      if (method === "date_asc") {
         return dateA.getTime() - dateB.getTime();
+      } else if (method === "date_desc") {
+        return dateB.getTime() - dateA.getTime();
+      } else if (method === "numPoints_asc") {
+        return a.numPoints - b.numPoints;
+      } else if (method === "numPoints_desc") {
+        return b.numPoints - a.numPoints;
       } else {
         return dateB.getTime() - dateA.getTime();
       }
     });
   };
+
 
   useEffect(() => {
     setRouteFiles((prevFiles) => sortRouteFiles([...prevFiles], sortMethod));
@@ -80,8 +104,10 @@ const RoutesPage = () => {
             value={sortMethod}
             onChange={(e) => setSortMethod(e.target.value)}
           >
-            <option value="asc">Upload Date (Ascending)</option>
-            <option value="desc">Upload Date (Descending)</option>
+            <option value="date_desc">Newest to Oldest</option>
+            <option value="date_asc">Oldest to Newest</option>
+            <option value="numPoints_desc">Points: High to Low</option>
+            <option value="numPoints_asc">Points: Low to High</option>
           </select>
         </div>
       </div>
@@ -95,11 +121,11 @@ const RoutesPage = () => {
         {routeFiles.map((route, index) => (
           <div key={index} className="route-item">
             <div className="route-details">
-              <div className="route-name">{route.fileName}</div>
+              <div className="route-name">{route.shortFileName}</div>
               <div className="route-upload-date">
                 Upload Date: {route.uploadDate}
               </div>
-              <div className="route-file-size">File Size: {route.fileSize}</div>
+              <div className="route-file-size">Total Points: {route.numPoints}</div>
             </div>
             <Link to={`/routes/${route.fileName}`}>
               <button className="view-route-button">View Route</button>

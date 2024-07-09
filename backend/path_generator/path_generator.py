@@ -16,9 +16,6 @@ def generate_path(points_list):
     park_ids = list(parks.keys())
     park_coords = [np.mean(parks[park_id], axis=0) for park_id in park_ids]
 
-    # Compute the distance from SHOP_COORDS to each park
-    # shop_to_park_distances = [haversine(SHOP_COORDS, park_coords[i], unit=Unit.KILOMETERS) for i in range(len(park_coords))]
-
     # Add DUMP_COORDS to the end of park_coords list
     park_coords.append(DUMP_COORDS)
 
@@ -41,12 +38,19 @@ def generate_path(points_list):
     final_route = [SHOP_COORDS]
     for park_id in optimal_park_order:
         final_route.extend(within_park_routes[park_id])
-
-    # Add DUMP and SHOP as the last two points
+        
     final_route.append(DUMP_COORDS)
     final_route.append(SHOP_COORDS)
 
-    return final_route, within_park_routes
+    # Reorder within_park_routes to match the order in final_route
+    ordered_within_park_routes = {}
+    for point in final_route:
+        for park_id, park_route in within_park_routes.items():
+            if point in park_route:
+                ordered_within_park_routes[park_id] = park_route
+                break
+
+    return final_route, ordered_within_park_routes
 
 
 def cluster_points_into_parks(points_list):

@@ -6,6 +6,7 @@
     "@deck.gl/core": "^9.0.20",
     "@deck.gl/layers": "^9.0.20",
     "@deck.gl/mapbox": "^9.0.20",
+    "@mapbox/mapbox-sdk": "^0.16.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -46,6 +47,7 @@
     ]
   },
   "devDependencies": {
+    "@types/mapbox__mapbox-sdk": "^0.14.0",
     "@types/webpack-env": "^1.18.5"
   }
 }

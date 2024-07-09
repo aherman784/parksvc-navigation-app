@@ -9,11 +9,13 @@ import "./assets/styles/App.css";
 const App = () => (
   <Layout>
     <Routes>
+      <Route path="/" element={<Navigate to="/routes" />} />
       <Route path="/projects" element={<ProjectsPage />} />
       <Route path="/routes" element={<RoutesPage />} />
       <Route path="/navigation" element={<NavigationPage />} />
-      <Route path="/" element={<Navigate to="/routes" />} />
       <Route path="/routes/:fileName" element={<ViewRoute />} />
+      {/* TODO: Change to navigation page for route if needed */}
+      <Route path="/navigation/:fileName" element={<NavigationPage />}/>
     </Routes>
   </Layout>
 );

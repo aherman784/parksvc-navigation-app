@@ -1,35 +1,70 @@
-import React, { useEffect, useState } from "react";
+import "./ViewRoute.css";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import RouteMap from "../components/maps/RouteMap";
-import "./ViewRoute.css";
-
-// Import the JSON file directly
-import routeDataJSON from "../routes_placeholders/Many_Park_Path_results_2024-07-01_14-33-19.json";
+import { Link } from "react-router-dom";
 
 const ViewRoute = () => {
   const { fileName } = useParams<{ fileName: string }>();
+  const [shortFileName, setShortFileName] = useState<string>("Unknown");
   const [routeNodes, setRouteNodes] = useState<number[][] | null>(null);
+  const [withinParkNodes, setWithinParkNodes] = useState<number[][] | null>(
+    null
+  );
   const [numNodes, setNumNodes] = useState<number>(0);
   const [totalLength, setTotalLength] = useState<number>(0);
 
   useEffect(() => {
-    const initializeRouteData = () => {
-      const nodes = getPathNodes(routeDataJSON);
-      setRouteNodes(nodes);
-      setNumNodes(nodes.length);
-      const lengthInMiles = getTotalLengthInMiles(routeDataJSON);
-      setTotalLength(lengthInMiles);
+    const initializeRouteData = async (fileName: string) => {
+      try {
+        // TODO: Replace with S3 import
+        const routeDataJSON = await import(
+          `../routes_placeholders/${fileName}`
+        );
+        const { finalRouteNodes, withinParkNodes } =
+          getPathNodes(routeDataJSON);
+        setRouteNodes(finalRouteNodes);
+        setWithinParkNodes(withinParkNodes);
+        setNumNodes(finalRouteNodes.length);
+
+        const lengthInMiles = getTotalLengthInMiles(routeDataJSON);
+        setTotalLength(lengthInMiles);
+
+        const shortFileNameMatch = fileName.match(/^(.*)_results_/);
+        const shortFileName =
+          shortFileNameMatch?.[1].replaceAll("_", " ") || "Unknown";
+        setShortFileName(shortFileName);
+      } catch (error) {
+        console.error("Error loading route data:", error);
+      }
     };
 
-    initializeRouteData();
-  }, []);
-
-  const getPathNodes = (json: any): number[][] => {
-    if (json && json.final_route && Array.isArray(json.final_route)) {
-      return json.final_route.map((point: number[]) => [point[0], point[1]]);
-    } else {
-      return [];
+    if (fileName) {
+      initializeRouteData(fileName);
     }
+  }, [fileName]);
+
+  const getPathNodes = (
+    json: any
+  ): { finalRouteNodes: number[][]; withinParkNodes: number[][] } => {
+    const DUMP_COORDS = [41.381526, -96.253521];
+    const SHOP_COORDS = [41.225876, -96.143424];
+
+    let finalRouteNodes: number[][] = [];
+    let withinParkNodes: number[][] = [];
+
+    if (json.final_route) {
+      finalRouteNodes = Object.values(json.final_route);
+    }
+
+    if (json.within_park_routes) {
+      withinParkNodes = Object.values(json.within_park_routes);
+    }
+    withinParkNodes.reverse();
+    withinParkNodes.unshift(SHOP_COORDS);
+    withinParkNodes.push(DUMP_COORDS);
+
+    return { finalRouteNodes, withinParkNodes };
   };
 
   // TODO: Implement logic to calculate total length in miles
@@ -40,10 +75,15 @@ const ViewRoute = () => {
 
   return (
     <div className="view-route-container">
-      <h1>{fileName}</h1>
+      <h1>{shortFileName}</h1>
       <p>Total Nodes: {numNodes}</p>
-      <p>Total Length: {totalLength.toFixed(2)} miles</p>
-      {routeNodes && <RouteMap points={routeNodes} />}
+      {/* <p>Total Length: {totalLength.toFixed(2)} miles</p> */}
+      {routeNodes && withinParkNodes && (
+        <RouteMap finalPoints={routeNodes} parkPoints={withinParkNodes} />
+      )}
+      <Link to={`/navigation/${fileName}`}>
+        <button className="upload-button">Drive</button>
+      </Link>
     </div>
   );
 };
