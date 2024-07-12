@@ -8,16 +8,17 @@ const ViewRoute = () => {
   const { fileName } = useParams<{ fileName: string }>();
   const [shortFileName, setShortFileName] = useState<string>("Unknown");
   const [routeNodes, setRouteNodes] = useState<number[][] | null>(null);
-  const [withinParkNodes, setWithinParkNodes] = useState<number[][] | null>(
+  const [withinParkNodes, setWithinParkNodes] = useState<number[][][] | null>(
     null
   );
   const [numNodes, setNumNodes] = useState<number>(0);
+  // TODO: Remove if not used
   const [totalLength, setTotalLength] = useState<number>(0);
 
   useEffect(() => {
     const initializeRouteData = async (fileName: string) => {
       try {
-        // TODO: Replace with S3 import
+        // Load route data from placeholder (replace with S3 fetch as needed)
         const routeDataJSON = await import(
           `../routes_placeholders/${fileName}`
         );
@@ -30,6 +31,7 @@ const ViewRoute = () => {
         const lengthInMiles = getTotalLengthInMiles(routeDataJSON);
         setTotalLength(lengthInMiles);
 
+        // Extract short file name for display
         const shortFileNameMatch = fileName.match(/^(.*)_results_/);
         const shortFileName =
           shortFileNameMatch?.[1].replaceAll("_", " ") || "Unknown";
@@ -46,30 +48,29 @@ const ViewRoute = () => {
 
   const getPathNodes = (
     json: any
-  ): { finalRouteNodes: number[][]; withinParkNodes: number[][] } => {
+  ): { finalRouteNodes: number[][]; withinParkNodes: number[][][] } => {
     const DUMP_COORDS = [41.381526, -96.253521];
     const SHOP_COORDS = [41.225876, -96.143424];
 
     let finalRouteNodes: number[][] = [];
-    let withinParkNodes: number[][] = [];
+    let withinParkNodes: number[][][] = [];
 
     if (json.final_route) {
-      finalRouteNodes = Object.values(json.final_route);
+      finalRouteNodes = json.final_route;
     }
 
     if (json.within_park_routes) {
       withinParkNodes = Object.values(json.within_park_routes);
     }
-    withinParkNodes.reverse();
-    withinParkNodes.unshift(SHOP_COORDS);
-    withinParkNodes.push(DUMP_COORDS);
+
+    withinParkNodes.unshift([SHOP_COORDS]);
+    withinParkNodes.push([DUMP_COORDS]);
 
     return { finalRouteNodes, withinParkNodes };
   };
 
-  // TODO: Implement logic to calculate total length in miles
-  // Check if needed
   const getTotalLengthInMiles = (json: any): number => {
+    // TODO: Placeholder function to calculate total length if needed
     return 100;
   };
 
@@ -77,7 +78,6 @@ const ViewRoute = () => {
     <div className="view-route-container">
       <h1>{shortFileName}</h1>
       <p>Total Nodes: {numNodes}</p>
-      {/* <p>Total Length: {totalLength.toFixed(2)} miles</p> */}
       {routeNodes && withinParkNodes && (
         <RouteMap finalPoints={routeNodes} parkPoints={withinParkNodes} />
       )}

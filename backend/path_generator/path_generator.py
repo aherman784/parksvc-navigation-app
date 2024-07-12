@@ -31,23 +31,30 @@ def generate_path(points_list):
 
     # Generate the route within each park
     within_park_routes = {}
-    for park_id in park_ids:
-        within_park_routes[park_id] = solve_within_park_route(parks[park_id])
+    previous_last_point = SHOP_COORDS
+    for park_id in optimal_park_order:
+        within_park_routes[park_id] = solve_within_park_route(
+            parks[park_id], previous_last_point)
+        previous_last_point = within_park_routes[park_id][-1]
 
     # Create final route starting from SHOP
     final_route = [SHOP_COORDS]
     for park_id in optimal_park_order:
         final_route.extend(within_park_routes[park_id])
-        
+
     final_route.append(DUMP_COORDS)
     final_route.append(SHOP_COORDS)
 
     # Reorder within_park_routes to match the order in final_route
     ordered_within_park_routes = {}
+    index = 0
+    used_park_routes = set()
     for point in final_route:
         for park_id, park_route in within_park_routes.items():
-            if point in park_route:
-                ordered_within_park_routes[park_id] = park_route
+            if point in park_route and park_id not in used_park_routes:
+                ordered_within_park_routes[index] = park_route
+                used_park_routes.add(park_id)
+                index += 1
                 break
 
     return final_route, ordered_within_park_routes
@@ -80,12 +87,13 @@ def compute_distance_matrix(coords):
     return distance_matrix
 
 
-def solve_within_park_route(points):
+def solve_within_park_route(points, start_point):
     if len(points) <= 1:
         return points
-    distance_matrix = compute_distance_matrix(points)
+    distance_matrix = compute_distance_matrix([start_point] + points)
     route = solve_tsp(distance_matrix)
-    return [points[i] for i in route]
+    # Remove the start_point from the final route as it's included in the distance matrix for routing purposes
+    return [points[i - 1] for i in route if i > 0]
 
 
 def compute_distance_matrix(points):

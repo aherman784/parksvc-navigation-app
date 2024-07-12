@@ -1,4 +1,4 @@
-import React from "react";
+import React, { StrictMode } from "react";
 // import { createRoot } from 'react-dom/client';
 import ReactDOM from "react-dom/client";
 import App from "./App";
@@ -18,7 +18,10 @@ const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
-  <Router>
-    <App />
-  </Router>
+  // TODO: Remove the <StrictMode> when moving to prod
+  // <StrictMode>
+    <Router>
+      <App />
+    </Router>
+  // </StrictMode>
 );
