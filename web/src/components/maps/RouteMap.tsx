@@ -39,13 +39,6 @@ const pointIcon = new L.Icon({
   shadowSize: [41, 41],
 });
 
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl:
-    "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png",
-  iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
-});
-
 function chunkArray(array: any[], size: number) {
   const chunkedArr = [];
   for (let i = 0; i < array.length; i += size) {
@@ -206,7 +199,8 @@ export default function RouteMap({
         </BaseLayer>
       </LayersControl>
       <ZoomHandler setZoomLevel={setZoomLevel} />
-      {zoomLevel > 10 && (
+      {/* Set zoom level for when to hide shop and dump points */}
+      {zoomLevel > 8 && (
         <>
           <Marker
             position={[adjustedFinalPoints[0][0], adjustedFinalPoints[0][1]]}
@@ -222,27 +216,27 @@ export default function RouteMap({
         </>
       )}
       {/* TODO: Check exact zoom level and button for clustering */}
-      {zoomLevel > 12 && (
-      <MarkerClusterGroup
-        chunkedLoading
-        spiderfyOnMaxZoom={true}
-        showCoverageOnHover={false}
-        disableClusteringAtZoom={18}
-      >
-        {adjustedFinalPoints.map((point, index) => {
-          // Skip clustering shop and dump markers
-          if (index === 0 || index === adjustedFinalPoints.length - 1) {
-            return null;
-          }
-          return (
-            <Marker
-              key={index}
-              position={[point[0], point[1]]}
-              icon={pointIcon}
-            />
-          );
-        })}
-      </MarkerClusterGroup>
+      {zoomLevel > 10 && (
+        <MarkerClusterGroup
+          chunkedLoading
+          spiderfyOnMaxZoom={true}
+          showCoverageOnHover={false}
+          disableClusteringAtZoom={18}
+        >
+          {adjustedFinalPoints.map((point, index) => {
+            // Skip clustering shop and dump markers
+            if (index === 0 || index === adjustedFinalPoints.length - 1) {
+              return null;
+            }
+            return (
+              <Marker
+                key={index}
+                position={[point[0], point[1]]}
+                icon={pointIcon}
+              />
+            );
+          })}
+        </MarkerClusterGroup>
       )}
       {drivingRoutes.map((route, idx) => (
         <Polyline

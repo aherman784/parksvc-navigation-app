@@ -1,6 +1,5 @@
-import React from 'react';
+import '../../styles/Sidebar.css';
 import { Link } from 'react-router-dom';
-import './Sidebar.css';
 
 const Sidebar = () => {
   return (
@@ -10,9 +9,7 @@ const Sidebar = () => {
       </div>
       <nav className="nav-links">
         <ul>
-          <li><Link to="/projects">Projects</Link></li>
           <li><Link to="/routes">Routes</Link></li>
-          <li><Link to="/navigation">Navigation</Link></li>
         </ul>
       </nav>
     </div>

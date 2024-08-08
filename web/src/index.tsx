@@ -1,10 +1,7 @@
 import React, { StrictMode } from "react";
-// import { createRoot } from 'react-dom/client';
 import ReactDOM from "react-dom/client";
 import App from "./App";
-import "./assets/styles/App.css";
 import { BrowserRouter as Router } from "react-router-dom";
-import "mapbox-gl/dist/mapbox-gl.css";
 
 // If you are using AWS Amplify, uncomment the following lines after running `amplify init`
 // import Amplify from 'aws-amplify';
@@ -19,9 +16,9 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   // TODO: Remove the <StrictMode> when moving to prod
-  // <StrictMode>
+  <StrictMode>
     <Router>
       <App />
     </Router>
-  // </StrictMode>
+  </StrictMode>
 );

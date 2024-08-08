@@ -1,23 +1,22 @@
+import "./styles/App.css";
 import { Route, Routes, Navigate } from "react-router-dom";
-import ProjectsPage from "./pages/ProjectsPage";
 import RoutesPage from "./pages/RoutesPage";
-import NavigationPage from "./pages/NavigationPage";
-import Layout from "./components/common/Layout";
+import Sidebar from "./components/common/Sidebar";
 import ViewRoute from "./pages/ViewRoute";
-import "./assets/styles/App.css";
 
-const App = () => (
-  <Layout>
-    <Routes>
-      <Route path="/" element={<Navigate to="/routes" />} />
-      <Route path="/projects" element={<ProjectsPage />} />
-      <Route path="/routes" element={<RoutesPage />} />
-      <Route path="/navigation" element={<NavigationPage />} />
-      <Route path="/routes/:fileName" element={<ViewRoute />} />
-      {/* TODO: Change to navigation page for route if needed */}
-      <Route path="/navigation/:fileName" element={<NavigationPage />}/>
-    </Routes>
-  </Layout>
-);
+const App = () => {
+  return (
+    <div className="app-container">
+      <Sidebar />
+      <div className="content">
+        <Routes>
+          <Route path="/" element={<Navigate to="/routes" />} />
+          <Route path="/routes" element={<RoutesPage />} />
+          <Route path="/routes/:fileName" element={<ViewRoute />} />
+        </Routes>
+      </div>
+    </div>
+  );
+};
 
 export default App;

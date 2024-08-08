@@ -1,8 +1,7 @@
-import "./ViewRoute.css";
+import "../styles/ViewRoute.css";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import RouteMap from "../components/maps/RouteMap";
-import { Link } from "react-router-dom";
 
 const ViewRoute = () => {
   const { fileName } = useParams<{ fileName: string }>();
@@ -18,7 +17,7 @@ const ViewRoute = () => {
   useEffect(() => {
     const initializeRouteData = async (fileName: string) => {
       try {
-        // Load route data from placeholder (replace with S3 fetch as needed)
+        // Load route data from placeholder (TODO: replace with S3 fetch as needed)
         const routeDataJSON = await import(
           `../routes_placeholders/${fileName}`
         );
@@ -77,13 +76,10 @@ const ViewRoute = () => {
   return (
     <div className="view-route-container">
       <h1>{shortFileName}</h1>
-      <p>Total Nodes: {numNodes}</p>
+      <p>Total Points: {numNodes}</p>
       {routeNodes && withinParkNodes && (
         <RouteMap finalPoints={routeNodes} parkPoints={withinParkNodes} />
       )}
-      <Link to={`/navigation/${fileName}`}>
-        <button className="upload-button">Drive</button>
-      </Link>
     </div>
   );
 };
